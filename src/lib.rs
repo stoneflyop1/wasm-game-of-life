@@ -18,6 +18,17 @@ cfg_if! {
 }
 
 #[wasm_bindgen]
+extern {
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(msg: &str);
+}
+
+// A macro to provide `println!(..)`-style syntax for `console.log` logging.
+macro_rules! log {
+    ($($t:tt)*) => (log(&format!($($t)*)))
+}
+
+#[wasm_bindgen]
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Cell {
@@ -60,6 +71,9 @@ impl Universe {
                     // All other cells remain in the same state.
                     (otherwise, _) => otherwise,
                 };
+                if next_cell {
+                    log!("    The cell ({},{}) becomes alive", row, col);
+                }                
                 next.set(idx, next_cell);
                 //next[idx] = next_cell;
             }
@@ -68,6 +82,16 @@ impl Universe {
     }
 
     pub fn new(width: u32, height: u32) -> Universe {
+
+        utils::set_panic_hook();
+
+        if width <= 0{
+            panic!("width is not positive");
+        }
+        if height <= 0 {
+            panic!("height is not positive");
+        }
+
         // let width = 64;
         // let height = 64;
 
