@@ -1,5 +1,6 @@
 extern crate cfg_if;
 extern crate wasm_bindgen;
+extern crate js_sys;
 
 mod utils;
 
@@ -61,13 +62,21 @@ impl Universe {
         self.cells = next;
     }
 
-    pub fn new() -> Universe {
-        let width = 64;
-        let height = 64;
+    pub fn new(width: u32, height: u32) -> Universe {
+        // let width = 64;
+        // let height = 64;
+
+        // let mut size = 1;
+
+        // while size*size < width {
+        //     size += 1
+        // }
+
+        // size -= 1;
 
         let cells = (0..width *height)
         .map(|i| {
-            if i % 2 == 0 || i % 7 == 0 {
+            if js_sys::Math::random() < 0.5 {//if i % 2 == 0 || i % size == 0 {
                 Cell::Alive
             } else {
                 Cell::Dead
