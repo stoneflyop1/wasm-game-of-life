@@ -1,0 +1,10 @@
+/target
+**/*.rs.bk
+Cargo.lock
+
+# log files
+*.log
+
+
+# ignore wasm-pack build folder
+/pkg
