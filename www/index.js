@@ -1,5 +1,6 @@
 import { Universe, Cell } from "wasm-game-of-life";
 import { memory } from "wasm-game-of-life/wasm_game_of_life_bg"
+import { O_NOCTTY } from "constants";
 
 const CELL_SIZE = 5; //px
 const GRID_COLOR = "#CCCCCC";
@@ -16,16 +17,43 @@ canvas.width = (CELL_SIZE + 1) * width + 1;
 
 const ctx = canvas.getContext('2d');
 
+let animationId = null;
+
 const renderLoop = () => {
     universe.tick();
 
     drawGrid();
     drawCells();
 
-    requestAnimationFrame(renderLoop);
+    animationId = requestAnimationFrame(renderLoop);
 }
 
-requestAnimationFrame(renderLoop);
+const isPaused = () => {
+    return animationId == null;
+}
+
+const playPauseButton = document.getElementById('play-pause');
+
+const play = () => {
+    playPauseButton.textContent = "⏸";
+    animationId = requestAnimationFrame(renderLoop);
+    //renderLoop();
+};
+
+const pause = () => {
+    playPauseButton.textContent = "▶";
+    cancelAnimationFrame(animationId);
+    animationId = null;
+};
+
+playPauseButton.addEventListener('click', event => {
+    if (isPaused()) play();
+    else pause();
+});
+
+
+
+
 
 const drawGrid = () => {
     ctx.beginPath();
@@ -81,3 +109,6 @@ const drawCells = () => {
 
     ctx.stroke();
 }
+
+play();
+//requestAnimationFrame(renderLoop);
