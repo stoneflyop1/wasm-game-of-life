@@ -7,7 +7,7 @@ const DEAD_COLOR = "#FFFFFF";
 const ALIVE_COLOR = "#000000";
 
 
-const universe = Universe.new(64, 64);
+const universe = Universe.new(144, 144);
 const width = universe.width();
 const height = universe.height();
 const canvas = document.getElementById('game-of-life-canvas');
@@ -52,9 +52,16 @@ const getIndex = (row, column) => {
     return row * width + column;
 }
 
+const bitIsSet = (n,arr) => {
+    //return arr[n] == Cell.Dead;
+    let byte = Math.floor(n/8);
+    let mask = 1 << (n%8);
+    return (arr[byte] & mask) == mask;
+}
+
 const drawCells = () => {
     const cellsPtr = universe.cells();
-    const cells = new Uint8Array(memory.buffer, cellsPtr, width*height);
+    const cells = new Uint8Array(memory.buffer, cellsPtr, width*height/8);
 
     ctx.beginPath();
 
@@ -62,7 +69,7 @@ const drawCells = () => {
         for (let col = 0; col < width; col++) {
             const idx = getIndex(row, col);
 
-            ctx.fillStyle = cells[idx] == Cell.Dead ? DEAD_COLOR : ALIVE_COLOR;
+            ctx.fillStyle = bitIsSet(idx, cells) ? ALIVE_COLOR : DEAD_COLOR;
             ctx.fillRect(
                 col * (CELL_SIZE + 1) + 1,
                 row * (CELL_SIZE + 1) + 1,

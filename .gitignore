@@ -8,3 +8,6 @@ Cargo.lock
 
 # ignore wasm-pack build folder
 /pkg
+
+# ignore bin folder
+/bin
