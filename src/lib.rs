@@ -36,6 +36,15 @@ pub enum Cell {
     Alive = 1,
 }
 
+// impl Cell {
+//     fn toggle(&mut self) {
+//         *self = match *self {
+//             Cell::Dead => Cell::Alive,
+//             Cell::Alive => Cell::Dead,
+//         };
+//     }
+// }
+
 extern crate fixedbitset;
 
 use fixedbitset::FixedBitSet;
@@ -127,6 +136,12 @@ impl Universe {
 
     pub fn cells(&self) -> *const u32 {
         self.cells.as_slice().as_ptr()
+    }
+
+    pub fn toggle_cell(&mut self, row: u32, column: u32) {
+        let idx = self.get_index(row, column);
+        let ok = self.cells[idx];
+        self.cells.set(idx, !ok);
     }
 }
 
