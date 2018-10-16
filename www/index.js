@@ -8,7 +8,7 @@ const DEAD_COLOR = "#FFFFFF";
 const ALIVE_COLOR = "#000000";
 
 
-const universe = Universe.new(64, 64);
+let universe = Universe.new(64, 64);
 const width = universe.width();
 const height = universe.height();
 const canvas = document.getElementById('game-of-life-canvas');
@@ -69,7 +69,10 @@ playPauseButton.addEventListener('click', event => {
     else pause();
 });
 
-
+const resetBtn = document.getElementById('reset-btn');
+resetBtn.addEventListener('click', function() {
+    universe = Universe.new(64,64);
+});
 
 const drawGrid = () => {
     ctx.beginPath();
