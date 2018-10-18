@@ -27,7 +27,8 @@ canvas.addEventListener('click', event => {
     const row = Math.min(Math.floor(canvasTop / (CELL_SIZE+1)), height - 1);
     const col = Math.min(Math.floor(canvasLeft/(CELL_SIZE+1)), width - 1);
 
-    universe.toggle_cell(row, col);
+    universe.set_glider(row, col);
+    //universe.toggle_cell(row, col);
 
     drawGrid();
     drawCells();

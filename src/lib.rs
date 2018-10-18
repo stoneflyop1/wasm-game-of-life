@@ -143,6 +143,26 @@ impl Universe {
         let ok = self.cells[idx];
         self.cells.set(idx, !ok);
     }
+
+    pub fn set_glider(&mut self, center_row: u32, center_col: u32) {
+        if center_row >=2 && center_col >= 2 {
+            let start_index = self.get_index(center_row-2, center_col-2);
+            let end_index = self.get_index(center_row+2, center_col+2);
+            self.cells.set_range(start_index..end_index, false);
+            for idx in start_index..end_index {
+                let mut enabled = false;
+                if idx == self.get_index(center_row-1, center_col-1)
+                    || idx == self.get_index(center_row, center_col)
+                    || idx == self.get_index(center_row, center_col+1)
+                    || idx == self.get_index(center_row+1, center_col-1)
+                    || idx == self.get_index(center_row+1, center_col) {
+                    enabled = true;
+                }
+                self.cells.set(idx, enabled);
+            }
+
+        }
+    }
 }
 
 impl Universe {
