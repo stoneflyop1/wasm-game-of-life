@@ -96,6 +96,16 @@ impl Universe {
         self.cells = next;
     }
 
+    pub fn reset(&mut self) {
+        for i in 0..self.cells.len() {
+            if js_sys::Math::random() >= 0.5 {
+                self.cells.set(i as usize, true)
+            } else {
+                self.cells.set(i as usize, false)
+            }
+        }
+    }
+
     pub fn new(width: u32, height: u32) -> Universe {
 
         utils::set_panic_hook();

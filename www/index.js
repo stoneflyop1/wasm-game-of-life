@@ -115,7 +115,8 @@ playPauseButton.addEventListener('click', event => {
 
 const resetBtn = document.getElementById('reset-btn');
 resetBtn.addEventListener('click', function() {
-    universe = Universe.new(64,64);
+    //universe = Universe.new(64,64);
+    universe.reset();
 });
 
 const drawGrid = () => {
