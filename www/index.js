@@ -68,10 +68,10 @@ const fps = new class {
 
         this.fps.textContent = `
         Frames per Second:
-                latest =${Math.round(fps)}
-                avg of last 100 = ${Math.round(mean)}
-                min of last 100 = ${Math.round(min)}
-                max of last 100 = ${Math.round(max)}
+latest =${Math.round(fps)}
+avg of last 100 = ${Math.round(mean)}
+min of last 100 = ${Math.round(min)}
+max of last 100 = ${Math.round(max)}
         `.trim();
     }
 }
