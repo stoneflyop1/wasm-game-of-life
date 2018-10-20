@@ -23,18 +23,24 @@ extern {
     fn log(msg: &str);
 }
 
+#[wasm_bindgen]
+extern {
+    #[wasm_bindgen(js_namespace = performance)]
+    fn now() -> f64;
+}
+
 // A macro to provide `println!(..)`-style syntax for `console.log` logging.
 macro_rules! log {
     ($($t:tt)*) => (log(&format!($($t)*)))
 }
 
-#[wasm_bindgen]
-#[repr(u8)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum Cell {
-    Dead = 0,
-    Alive = 1,
-}
+// #[wasm_bindgen]
+// #[repr(u8)]
+// #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+// pub enum Cell {
+//     Dead = 0,
+//     Alive = 1,
+// }
 
 // impl Cell {
 //     fn toggle(&mut self) {
