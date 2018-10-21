@@ -3,39 +3,8 @@ import { Universe } from "wasm-game-of-life";
 import { memory } from "wasm-game-of-life/wasm_game_of_life_bg"
 //import { O_NOCTTY } from "constants";
 
-const CELL_SIZE = 5; //px
-const GRID_COLOR = "#CCCCCC";
-const DEAD_COLOR = "#FFFFFF";
-const ALIVE_COLOR = "#000000";
-
-
 let universe = Universe.new(64, 64);
-const width = universe.width();
-const height = universe.height();
 const canvas = document.getElementById('game-of-life-canvas');
-canvas.height = (CELL_SIZE + 1) * height + 1;
-canvas.width = (CELL_SIZE + 1) * width + 1;
-
-canvas.addEventListener('click', event => {
-    const boundingRect = canvas.getBoundingClientRect();
-    
-    const scaleX = canvas.width / boundingRect.width;
-    const scaleY = canvas.height / boundingRect.height;
-
-    const canvasLeft = (event.clientX - boundingRect.left) * scaleX;
-    const canvasTop = (event.clientY - boundingRect.top) * scaleY;
-
-    const row = Math.min(Math.floor(canvasTop / (CELL_SIZE+1)), height - 1);
-    const col = Math.min(Math.floor(canvasLeft/(CELL_SIZE+1)), width - 1);
-
-    universe.set_glider(row, col);
-    //universe.toggle_cell(row, col);
-
-    drawGrid();
-    drawCells();
-});
-
-const ctx = canvas.getContext('2d');
 
 const fps = new class {
     constructor() {
@@ -78,14 +47,15 @@ max of last 100 = ${Math.round(max)}
 
 let animationId = null;
 
+import {draw} from './lib/draw2d.js';
+
 const renderLoop = () => {
 
     fps.render();
 
     universe.tick();
 
-    drawGrid();
-    drawCells();
+    draw(canvas, universe, memory);
 
     animationId = requestAnimationFrame(renderLoop);
 }
@@ -119,84 +89,6 @@ resetBtn.addEventListener('click', function() {
     universe.reset();
 });
 
-const drawGrid = () => {
-    ctx.beginPath();
-    ctx.strokeStyle = GRID_COLOR;
-    
-    // Vertical lines
-    for (let i = 0; i <= width; i++) {
-        let x = i*(CELL_SIZE+1)+1;
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, (CELL_SIZE+1)*height+1);
-    }
-
-    // Horizontal lines
-    for (let j = 0; j <= height;j++) {
-        let y = j*(CELL_SIZE+1)+1;
-        ctx.moveTo(0, y);
-        ctx.lineTo((CELL_SIZE+1)*width+1, y);
-    }
-
-    ctx.stroke();
-}
-
-const getIndex = (row, column) => {
-    return row * width + column;
-}
-
-const bitIsSet = (n,arr) => {
-    //return arr[n] == Cell.Dead;
-    let byte = Math.floor(n/8);
-    let mask = 1 << (n%8);
-    return (arr[byte] & mask) == mask;
-}
-
-const drawStateCells = (cells, isAlive) => {
-    for (let row = 0; row < height; row++) {
-        for (let col = 0; col < width; col++) {
-            const idx = getIndex(row, col);
-
-            if (bitIsSet(idx, cells) != isAlive) {
-                continue;
-            }
-
-            ctx.fillStyle = isAlive ? ALIVE_COLOR : DEAD_COLOR;
-            ctx.fillRect(
-                col * (CELL_SIZE + 1) + 1,
-                row * (CELL_SIZE + 1) + 1,
-                CELL_SIZE,
-                CELL_SIZE
-            );
-        }
-    }
-}
-
-const drawCells = () => {
-    const cellsPtr = universe.cells();
-    const cells = new Uint8Array(memory.buffer, cellsPtr, width*height/8);
-
-    ctx.beginPath();
-
-    drawStateCells(cells, true);
-
-    drawStateCells(cells, false);
-
-    // for (let row = 0; row < height; row++) {
-    //     for (let col = 0; col < width; col++) {
-    //         const idx = getIndex(row, col);
-
-    //         ctx.fillStyle = bitIsSet(idx, cells) ? ALIVE_COLOR : DEAD_COLOR;
-    //         ctx.fillRect(
-    //             col * (CELL_SIZE + 1) + 1,
-    //             row * (CELL_SIZE + 1) + 1,
-    //             CELL_SIZE,
-    //             CELL_SIZE
-    //         );
-    //     }
-    // }
-
-    ctx.stroke();
-}
 
 play();
 //requestAnimationFrame(renderLoop);
