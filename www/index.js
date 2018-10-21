@@ -151,17 +151,16 @@ const bitIsSet = (n,arr) => {
     return (arr[byte] & mask) == mask;
 }
 
-const drawCells = () => {
-    const cellsPtr = universe.cells();
-    const cells = new Uint8Array(memory.buffer, cellsPtr, width*height/8);
-
-    ctx.beginPath();
-
+const drawStateCells = (cells, isAlive, color) => {
     for (let row = 0; row < height; row++) {
         for (let col = 0; col < width; col++) {
             const idx = getIndex(row, col);
 
-            ctx.fillStyle = bitIsSet(idx, cells) ? ALIVE_COLOR : DEAD_COLOR;
+            if (bitIsSet(idx, cells) != isAlive) {
+                continue;
+            }
+
+            ctx.fillStyle = color;
             ctx.fillRect(
                 col * (CELL_SIZE + 1) + 1,
                 row * (CELL_SIZE + 1) + 1,
@@ -170,6 +169,31 @@ const drawCells = () => {
             );
         }
     }
+}
+
+const drawCells = () => {
+    const cellsPtr = universe.cells();
+    const cells = new Uint8Array(memory.buffer, cellsPtr, width*height/8);
+
+    ctx.beginPath();
+
+    drawStateCells(cells, true, ALIVE_COLOR);
+
+    drawStateCells(cells, false, DEAD_COLOR);
+
+    // for (let row = 0; row < height; row++) {
+    //     for (let col = 0; col < width; col++) {
+    //         const idx = getIndex(row, col);
+
+    //         ctx.fillStyle = bitIsSet(idx, cells) ? ALIVE_COLOR : DEAD_COLOR;
+    //         ctx.fillRect(
+    //             col * (CELL_SIZE + 1) + 1,
+    //             row * (CELL_SIZE + 1) + 1,
+    //             CELL_SIZE,
+    //             CELL_SIZE
+    //         );
+    //     }
+    // }
 
     ctx.stroke();
 }

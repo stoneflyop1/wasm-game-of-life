@@ -46,7 +46,7 @@ pub struct Timer<'a> {
 
 impl<'a> Timer<'a> {
     pub fn new(name: &'a str) -> Timer<'a> {
-        time(name);
+        time(name); // console.time()
         Timer {name}
     }
 }
