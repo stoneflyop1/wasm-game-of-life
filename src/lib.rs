@@ -83,6 +83,7 @@ pub struct Universe {
     width: u32,
     height: u32,
     cells: FixedBitSet,
+    ncells: FixedBitSet
 }
 
 #[wasm_bindgen]
@@ -91,10 +92,10 @@ impl Universe {
 
         let _timer = Timer::new("Universe::tick");
 
-        let mut next = {
-            let _timer = Timer::new("allocate next cells");
-            self.cells.clone()
-        };
+        // let mut next = {
+        //     let _timer = Timer::new("allocate next cells");
+        //     self.cells.clone()
+        // };
 
         {
             let _timer = Timer::new("new generation");
@@ -116,26 +117,28 @@ impl Universe {
                         (false, 3) => true,
                         // All other cells remain in the same state.
                         (otherwise, _) => otherwise,
-                    };
-                    // if next_cell {
-                    //     log!("    The cell ({},{}) becomes alive", row, col);
-                    // }                
-                    next.set(idx, next_cell);
-                    //next[idx] = next_cell;
+                    };              
+                    //next.set(idx, next_cell);
+                    self.ncells.set(idx, next_cell);
                 }
             }
         }
 
-        let _timer = Timer::new("free old cells");
-        self.cells = next;
+        let _timer = Timer::new("set old cells");
+        for i in 0..self.ncells.len() {
+            self.cells.set(i as usize, self.ncells[i]);
+        }
+        //self.cells = next;
     }
 
     pub fn reset(&mut self) {
         for i in 0..self.cells.len() {
             if js_sys::Math::random() >= 0.5 {
-                self.cells.set(i as usize, true)
+                self.cells.set(i as usize, true);
+                self.ncells.set(i as usize, true);
             } else {
-                self.cells.set(i as usize, false)
+                self.cells.set(i as usize, false);
+                self.ncells.set(i as usize, false);
             }
         }
     }
@@ -165,11 +168,15 @@ impl Universe {
         let mut cells = FixedBitSet::with_capacity((width*height) as usize);
         for i in 0..cells.len() {
             if js_sys::Math::random() >= 0.5 {
-                cells.set(i as usize, true)
+                cells.set(i as usize, true);
             }
         }
+        let mut ncells = FixedBitSet::with_capacity((width*height) as usize);
+        for i in 0..ncells.len() {
+            ncells.set(i as usize, cells[i]);
+        }
 
-        Universe{width, height, cells}
+        Universe{width, height, cells, ncells}
     }
 
     pub fn render(&self) -> String {
@@ -185,7 +192,7 @@ impl Universe {
     }
 
     pub fn cells(&self) -> *const u32 {
-        self.cells.as_slice().as_ptr()
+        self.ncells.as_slice().as_ptr()
     }
 
     pub fn toggle_cell(&mut self, row: u32, column: u32) {
