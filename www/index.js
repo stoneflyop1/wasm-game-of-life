@@ -151,7 +151,7 @@ const bitIsSet = (n,arr) => {
     return (arr[byte] & mask) == mask;
 }
 
-const drawStateCells = (cells, isAlive, color) => {
+const drawStateCells = (cells, isAlive) => {
     for (let row = 0; row < height; row++) {
         for (let col = 0; col < width; col++) {
             const idx = getIndex(row, col);
@@ -160,7 +160,7 @@ const drawStateCells = (cells, isAlive, color) => {
                 continue;
             }
 
-            ctx.fillStyle = color;
+            ctx.fillStyle = isAlive ? ALIVE_COLOR : DEAD_COLOR;
             ctx.fillRect(
                 col * (CELL_SIZE + 1) + 1,
                 row * (CELL_SIZE + 1) + 1,
@@ -177,9 +177,9 @@ const drawCells = () => {
 
     ctx.beginPath();
 
-    drawStateCells(cells, true, ALIVE_COLOR);
+    drawStateCells(cells, true);
 
-    drawStateCells(cells, false, DEAD_COLOR);
+    drawStateCells(cells, false);
 
     // for (let row = 0; row < height; row++) {
     //     for (let col = 0; col < width; col++) {
