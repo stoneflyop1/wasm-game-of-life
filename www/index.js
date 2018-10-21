@@ -127,7 +127,7 @@ const drawGrid = () => {
     for (let i = 0; i <= width; i++) {
         let x = i*(CELL_SIZE+1)+1;
         ctx.moveTo(x, 0);
-        ctx.lineTo(x, (CELL_SIZE+1)*Headers+1);
+        ctx.lineTo(x, (CELL_SIZE+1)*height+1);
     }
 
     // Horizontal lines
