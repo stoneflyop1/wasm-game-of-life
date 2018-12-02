@@ -1,5 +1,3 @@
-<meta charset="utf-8"/>
-
 # 🦀🕸️ `wasm-pack-template`
 
 A template for kick starting a Rust and WebAssembly project using
@@ -30,34 +28,44 @@ publishing the resulting package to NPM.
 
 [Learn more about `cargo generate` here.](https://github.com/ashleygwilliams/cargo-generate)
 
-```
+```sh
 cargo generate --git https://github.com/rustwasm/wasm-pack-template.git --name my-project
 cd my-project
 ```
 
 ### Or you can just git clone wasm-pack-template repo, then change the project info between "{{" and "}}" just like this repo
-```
+
+```sh
 git clone https://github.com/rustwasm/wasm-pack-template.git wasm-game-of-life
 ```
 
 ### 🛠️ Build with `wasm-pack build`
 
-```
+```sh
 wasm-pack build
 ```
 
 ### 🔬 Test in Headless Browsers with `wasm-pack test`
 
-```
+```sh
 wasm-pack test --headless --firefox
 ```
 
 ### 🎁 Publish to NPM with `wasm-pack publish`
 
-```
+```sh
 wasm-pack publish
+```
+
+### Or use local npm package with `npm link`
+
+```sh
+cd wasm-game-of-life/pkg
+npm link
+cd wasm-game-of-life/www
+npm link wasm-game-of-life
 ```
 
 ## References
 
-- [the "Rust and WebAssembly" book](https://rustwasm.github.io/book)
+* [the "Rust and WebAssembly" book](https://rustwasm.github.io/book)
