@@ -1,6 +1,21 @@
+/// <reference path="../types/game.d.ts" />
+/// <reference path="../types/wasm.d.ts" />
+
+/**
+ * @type {CanvasRenderingContext2D} 
+ */
 let ctx;
+/**
+ * @type {Game.Universe}
+ */
 let universe;
+/**
+ * @type {number}
+ */
 let width;
+/**
+ * @type {number}
+ */
 let height;
 
 const CELL_SIZE = 5; //px
@@ -10,7 +25,12 @@ const ALIVE_COLOR = "#000000";
 
 //import util from './util.js'
 import {getIndex, bitIsSet} from './util.js'
-
+/**
+ * 
+ * @param {HTMLCanvasElement} canvas 
+ * @param {Game.Universe} universe1
+ * @param {WebAssembly.Memory} memory 
+ */
 export function draw(canvas, universe1, memory) {
     if (!universe) {
         universe = universe1;

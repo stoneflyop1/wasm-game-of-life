@@ -1,8 +1,14 @@
+/// <reference path="types/game.d.ts" />
+/// <reference path="types/wasm.d.ts" />
+
 import { Universe } from "wasm-game-of-life";
 //import { Universe, Cell } from "wasm-game-of-life";
 import { memory } from "wasm-game-of-life/wasm_game_of_life_bg"
 //import { O_NOCTTY } from "constants";
 
+/**
+ * @type {Game.Universe}
+ */
 let universe = Universe.new(64, 64);
 const canvas = document.getElementById('game-of-life-canvas');
 
