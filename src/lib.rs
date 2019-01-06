@@ -78,9 +78,12 @@ extern crate fixedbitset;
 
 use fixedbitset::FixedBitSet;
 
+/// represents a life universe with width and height
 #[wasm_bindgen]
 pub struct Universe {
+    /// the width of the universe
     width: u32,
+    /// the height of the universe
     height: u32,
     cells: FixedBitSet,
     ncells: FixedBitSet
@@ -88,6 +91,7 @@ pub struct Universe {
 
 #[wasm_bindgen]
 impl Universe {
+    /// a frame tick record
     pub fn tick(&mut self) {
 
         let _timer = Timer::new("Universe::tick");
@@ -130,7 +134,7 @@ impl Universe {
         }
         //self.cells = next;
     }
-
+    /// reset the universe with random cells
     pub fn reset(&mut self) {
         for i in 0..self.cells.len() {
             if js_sys::Math::random() >= 0.5 {
@@ -142,7 +146,7 @@ impl Universe {
             }
         }
     }
-
+    /// create a universe with specified width and height
     pub fn new(width: u32, height: u32) -> Universe {
 
         utils::set_panic_hook();
@@ -178,29 +182,29 @@ impl Universe {
 
         Universe{width, height, cells, ncells}
     }
-
+    /// get the render string
     pub fn render(&self) -> String {
         self.to_string()
     }
-
+    /// get the universe width
     pub fn width(&self) -> u32 {
         self.width
     }
-
+    /// get the universe height
     pub fn height(&self) -> u32 {
         self.height
     }
-
+    /// get the universe cells
     pub fn cells(&self) -> *const u32 {
         self.ncells.as_slice().as_ptr()
     }
-
+    /// reverse the cell state
     pub fn toggle_cell(&mut self, row: u32, column: u32) {
         let idx = self.get_index(row, column);
         let ok = self.cells[idx];
         self.cells.set(idx, !ok);
     }
-
+    /// set a glider with centered position
     pub fn set_glider(&mut self, center_row: u32, center_col: u32) {
         if center_row >=2 && center_col >= 2 {
             let start_index = self.get_index(center_row-2, center_col-2);
