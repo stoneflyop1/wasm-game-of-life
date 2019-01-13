@@ -53,7 +53,8 @@ max of last 100 = ${Math.round(max)}
 
 let animationId = null;
 
-import {draw} from './lib/draw2d.js';
+// import {draw} from './lib/draw2d.js';
+import {draw} from './lib/drawGL.js';
 
 const renderLoop = () => {
 
