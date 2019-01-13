@@ -42,7 +42,7 @@ const vs = `
         varying vec4 v_Color;
         void main() {
             gl_Position = a_Position;
-            gl_PointSize = 10.0;
+            gl_PointSize = 3.0;
             v_Color = a_Color;
         }
 `;
@@ -56,6 +56,10 @@ const fs = `
             gl_FragColor = v_Color;
         }
 `;
+/**
+ * @type {Float32Array}
+ */
+let vertices;
 
 import {getIndex, bitIsSet} from './util.js';
 
@@ -70,7 +74,13 @@ export function draw(canvas, universe1, memory) {
         universe = universe1;
         width = universe.width();
         height = universe.height();
+        vertices = new Float32Array(height*width*5);
     }
+
+    
+    getVertices(memory, vertices);
+
+    const n = vertices.length / 5;
 
     if (!gl) {
         canvas.height = (CELL_SIZE) * height;
@@ -82,17 +92,15 @@ export function draw(canvas, universe1, memory) {
 
         if (!program) return null;
 
+        // background color
+        initColor(gl, 0.0,0.0,0.0,1.0);
+        gl.clearColor(0.0,0.0,0.0,1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
         
     }
 
-    // background color
-    initColor(gl, 0.0,0.0,0.0,1.0);
-    gl.clearColor(0.0,0.0,0.0,1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-
-    const vertices = getVertices(memory);
-
-    const n = initVertexBuffers(gl, program, vertices, 5);
+    initVertexBuffers(gl, program, vertices, 5);
     
     const startIndex = 0;
     const drawNumber = n - startIndex;
@@ -118,22 +126,27 @@ function getVertex(row, col) {
  * 
  * @param {WebAssembly.Memory} memory 
  */
-function getVertices(memory) {
+function getVertices(memory, vertices) {
     const cellsPtr = universe.cells();
     const cells = new Uint8Array(memory.buffer, cellsPtr, width*height/8);
-    let numbers = [];
+    //let numbers = [];
     for (let row = 0; row < height; row++) {
         for (let col = 0; col < width; col++) {
             const idx = getIndex(row, col, width);
             const v = getVertex(row, col);
+            const index = idx*5;
+            vertices[index] = v.x;
+            vertices[index+1] = v.y;
             if (bitIsSet(idx, cells)) {
-                numbers = numbers.concat([v.x,v.y, 0.0,0.0,0.0]);
+                vertices.set([0.0,0.0,0.0], index+2);
+                //numbers = numbers.concat([v.x,v.y, 0.0,0.0,0.0]);
             } else {
-                numbers = numbers.concat([v.x,v.y, 1.0,1.0,1.0]);
+                vertices.set([1.0,1.0,1.0], index+2);
+                //numbers = numbers.concat([v.x,v.y, 1.0,1.0,1.0]);
             }
         }
     }
-    return new Float32Array(numbers);
+    //return new Float32Array(numbers);
 }
 
 
