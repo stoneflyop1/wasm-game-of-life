@@ -24,7 +24,7 @@ const DEAD_COLOR = "#FFFFFF";
 const ALIVE_COLOR = "#000000";
 
 //import util from './util.js'
-import {getIndex, bitIsSet} from './util.js'
+import {getIndex, bitIsSet} from './util.js';
 /**
  * 
  * @param {HTMLCanvasElement} canvas 
