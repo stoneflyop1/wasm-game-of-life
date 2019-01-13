@@ -97,7 +97,6 @@ export function draw(canvas, universe1, memory) {
         gl.clearColor(0.0,0.0,0.0,1.0);
         gl.clear(gl.COLOR_BUFFER_BIT);
 
-        
     }
 
     initVertexBuffers(gl, program, vertices, 5);
@@ -115,8 +114,8 @@ export function draw(canvas, universe1, memory) {
  * @returns {{x:number, y:number}}
  */
 function getVertex(row, col) {
-    const x = -1 + row * dx;
-    const y = 1 - col * dy;
+    const x = -0.99 + row * dx;
+    const y = 0.99 - col * dy;
     return {
         x:x, y:y
     };
