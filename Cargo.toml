@@ -2,6 +2,7 @@
 name = "wasm-game-of-life"
 version = "0.1.0"
 authors = ["jifeng"]
+edition = "2018"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
