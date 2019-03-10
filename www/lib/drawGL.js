@@ -170,7 +170,7 @@ function initShaders(gl, vs, fs, noUseProgram) {
     gl.linkProgram(program);
 
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-        const err = 'Unable to initialize the shader program: ' + gl.getProgramInfoLog(shaderProgram);
+        const err = 'Unable to initialize the shader program: ' + gl.getProgramInfoLog(program);
         gl.deleteProgram(program);
         gl.deleteShader(fragmentShader);
         gl.deleteShader(vertexShader);

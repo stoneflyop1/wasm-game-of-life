@@ -4,8 +4,9 @@ extern crate js_sys;
 
 mod utils;
 
+mod webgl;
+
 use cfg_if::cfg_if;
-use wasm_bindgen::prelude::*;
 
 cfg_if! {
     // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
@@ -16,6 +17,8 @@ cfg_if! {
         static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
     }
 }
+
+use wasm_bindgen::prelude::*; // enable wasm_bingen attribute
 
 #[wasm_bindgen]
 extern {
@@ -227,7 +230,12 @@ impl Universe {
 }
 
 impl Universe {
-    fn get_index(&self, row: u32, column: u32) -> usize {
+
+    pub fn get_cells(&self) -> &FixedBitSet {
+        &self.cells
+    }
+
+    pub fn get_index(&self, row: u32, column: u32) -> usize {
         (row * self.width + column) as usize
     }
 
