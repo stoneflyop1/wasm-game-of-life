@@ -22,8 +22,10 @@ impl App {
         let document = web_sys::window().unwrap().document().unwrap();
         let canvas = document.get_element_by_id("game-of-life-canvas").unwrap();
         let canvas: web_sys::HtmlCanvasElement = canvas.dyn_into::<web_sys::HtmlCanvasElement>()?;
+        let cell_size = 5;
+        canvas.set_height(cell_size * height);
+        canvas.set_width(cell_size * width);
         let gl = canvas.get_context("webgl")?.unwrap().dyn_into::<WebGlRenderingContext>()?;
-
         let vs = r#"
         attribute vec4 a_Position;
         attribute vec4 a_Color;
@@ -50,6 +52,15 @@ impl App {
             program: program,
         })
 
+    }
+
+    pub fn reset(&mut self) -> Result<(), JsValue> {
+        self.universe.reset();
+        Ok(())
+    }
+
+    pub fn tick(&mut self) {
+        self.universe.tick();
     }
 
     pub fn start(&self) -> Result<(), JsValue> {
@@ -113,7 +124,7 @@ impl App {
 
 
 fn get_vertex(row: u32, col: u32, dx: f32, dy: f32) -> (f32,f32) {
-    (-0.99 + (row as f32) * dx, 0.99 - (col as f32) * dy )
+    (-0.98 + (row as f32) * dx, 0.98 - (col as f32) * dy )
 }
 
 fn init_shaders(gl: &WebGlRenderingContext, vs: &str, fs: &str) -> Result<WebGlProgram, String> {
