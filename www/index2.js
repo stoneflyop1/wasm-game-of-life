@@ -6,11 +6,11 @@ let animationId = null;
 
 const app = App.new(64,64);
 
+//app.start();
+
 const renderLoop = () => {
 
     fps.render();
-
-    app.start();
 
     app.tick();
 

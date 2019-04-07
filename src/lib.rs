@@ -77,7 +77,7 @@ impl<'a> Drop for Timer<'a> {
 //     }
 // }
 
-extern crate fixedbitset;
+//extern crate fixedbitset;
 
 use fixedbitset::FixedBitSet;
 

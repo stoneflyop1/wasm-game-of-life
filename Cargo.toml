@@ -43,6 +43,10 @@ features = [
     'WebGlProgram',
     'WebGlShader',
     'Window',
+    'MouseEvent',
+    'EventTarget',
+    "DomRect",
+    "DomRectReadOnly",
 ]
 
 [profile.release]
