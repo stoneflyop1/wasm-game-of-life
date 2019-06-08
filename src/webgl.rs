@@ -5,6 +5,9 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::{WebGlProgram, WebGlRenderingContext, WebGlShader, MouseEvent};
 
+use std::rc::Rc;
+use std::cell::RefCell;
+
 use crate::*;
 
 #[wasm_bindgen]
@@ -12,10 +15,10 @@ pub struct App {
     width: u32,
     height: u32,
     size: f32,
-    universe: Universe,
+    universe: Rc<RefCell<Universe>>,
     gl: WebGlRenderingContext,
     program: WebGlProgram,
-    canvas: web_sys::HtmlCanvasElement,
+    //canvas: web_sys::HtmlCanvasElement,
 }
 
 #[wasm_bindgen]
@@ -47,35 +50,70 @@ impl App {
 
         let universe = Universe::new(width, height);
 
+        let u = Rc::new(RefCell::new(universe));
+
+        let u0 = Rc::clone(&u);
+
+        let canvas = Rc::new(canvas);
+
+        let c = Rc::clone(&canvas);
+
         let size = 0.98;
 
-        
+        let closure = Closure::wrap(Box::new(move |event: MouseEvent| {
+            let x = event.client_x() as f32;
+            let y = event.client_y() as f32;
+            // warn("click1");
+            // let el = event.related_target().unwrap();
+            // warn("click2");
+            // let el = wasm_bindgen::JsCast::dyn_into::<web_sys::HtmlCanvasElement>(el);
+            // let c = el.ok().unwrap();
+            // warn("click3");
+            //let c = web_sys::Element::from(event.related_target().unwrap()) as web_sys::HtmlCanvasElement;//canvas.clone();
+            
+            let rect = c.get_bounding_client_rect();
+            let h = c.height() as f32;
+            let w = c.width() as f32;
+            let x = (x - (rect.left() as f32) - h / 2.0 ) / (h / 2.0);
+            let y = ((w/2.0) - (y-(rect.top() as f32))) / (w/2.0);
+
+            let (row, col) = get_index(width as f32, height as f32, size, x, y);
+            warn(&format!("click cell: {} {}", row, col));
+
+            u0.borrow_mut().set_glider(row, col);
+
+        }) as Box<dyn FnMut(_)>);
+
+        //canvas.dyn_ref::<HtmlElement>().unwrap().set_onclick(Some(closure.as_ref().unchecked_ref()));
+
+        Rc::clone(&canvas).add_event_listener_with_callback("click", closure.as_ref().unchecked_ref())?;
+        closure.forget();
 
         let program = init_shaders(&gl, vs, fs)?;
         Ok(App {
             width: width,
             height: height,
             size: size,
-            universe: universe,
+            universe: u,
             gl: gl,
             program: program,
-            canvas: canvas,
+            // canvas: canvas,
         })
 
     }
 
     pub fn reset(&mut self) -> Result<(), JsValue> {
-        self.universe.reset();
+        self.universe.borrow_mut().reset();
         Ok(())
     }
 
     pub fn tick(&mut self) -> Result<(), JsValue> {
-        self.universe.tick();
+        self.universe.borrow_mut().tick();
 
         let width = self.width;
         let height = self.height;
 
-        let universe = &self.universe;
+        let universe = self.universe.borrow();
         let gl = &self.gl;
         let program = &self.program;
 
@@ -151,19 +189,19 @@ impl App {
     // }
 }
 
-impl App {
-    fn set_glider(&mut self, row: u32, col: u32) {
-        self.universe.set_glider(row, col);
-    }
-}
+// impl App {
+//     fn set_glider(&mut self, row: u32, col: u32) {
+//         self.universe.borrow_mut().set_glider(row, col);
+//     }
+// }
 
 fn get_vertex(w: f32, h: f32, size: f32, row: u32, col: u32) -> (f32,f32) {
 
 
-        let dx = 2.0 / w;
-        let dy = 2.0 / h;
-        (-size + (row as f32) * dx, size - (col as f32) * dy )
-    }
+    let dx = 2.0 / w;
+    let dy = 2.0 / h;
+    (-size + (row as f32) * dx, size - (col as f32) * dy )
+}
 
 fn get_index(w: f32, h: f32, size: f32, x: f32, y: f32) -> (u32, u32) {
 

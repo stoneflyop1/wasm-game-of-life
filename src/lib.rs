@@ -26,6 +26,9 @@ extern {
     fn log(msg: &str);
 
     #[wasm_bindgen(js_namespace = console)]
+    fn warn(msg: &str);
+
+    #[wasm_bindgen(js_namespace = console)]
     fn time(name: &str);
 
     #[wasm_bindgen(js_namespace = console)]
