@@ -26,7 +26,7 @@ impl App {
     pub fn new(width: u32, height: u32) -> Result<App, JsValue> {
         let document = web_sys::window().unwrap().document().unwrap();
         let canvas = document.get_element_by_id("game-of-life-canvas").unwrap();
-        let canvas: web_sys::HtmlCanvasElement = canvas.dyn_into::<web_sys::HtmlCanvasElement>()?;
+        let canvas = canvas.dyn_into::<web_sys::HtmlCanvasElement>()?;
         let cell_size = 5;
         canvas.set_height(cell_size * height);
         canvas.set_width(cell_size * width);

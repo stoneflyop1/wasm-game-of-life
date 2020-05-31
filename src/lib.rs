@@ -217,14 +217,11 @@ impl Universe {
             let end_index = self.get_index(center_row+2, center_col+2);
             self.cells.set_range(start_index..end_index, false);
             for idx in start_index..end_index {
-                let mut enabled = false;
-                if idx == self.get_index(center_row-1, center_col-1)
+                let enabled = idx == self.get_index(center_row-1, center_col-1)
                     || idx == self.get_index(center_row, center_col)
                     || idx == self.get_index(center_row, center_col+1)
                     || idx == self.get_index(center_row+1, center_col-1)
-                    || idx == self.get_index(center_row+1, center_col) {
-                    enabled = true;
-                }
+                    || idx == self.get_index(center_row+1, center_col);
                 self.cells.set(idx, enabled);
             }
 
